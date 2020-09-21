@@ -1,0 +1,10 @@
+name: Build
+on: [push]
+
+jobs:
+  runs-on: ubuntu-latest
+  steps:
+    - name: sam build
+      uses: TractorZoom/sam-cli-action@master
+      with:
+        sam_command: "build"
