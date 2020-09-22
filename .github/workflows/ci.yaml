@@ -1,4 +1,4 @@
-name: Build
+name: Build & Publish to S3
 on: [push]
 
 jobs:
@@ -6,15 +6,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: sam build
+      - name: Run SAM build
         uses: TractorZoom/sam-cli-action@master
         with:
           sam_command: "build"
-      - name: Zip sam build
+      - name: Archive build
         uses: montudor/action-zip@v0.1.0
         with:
           args: zip -qq -r aws-sam.zip README.md .aws-sam
-      - name: Upload sam build
+      - name: Upload build archive
         uses: actions/upload-artifact@v2
         with:
           name: aws-sam
@@ -34,19 +34,24 @@ jobs:
           - region: syd
             aws_region: ap-southeast-2
     steps:
-      - name: Download sam build
+      - name: Download build archive
         uses: actions/download-artifact@v2
         with:
           name: aws-sam
-      - name: Unzip sam build
+      - name: Unzip build archive
         uses: montudor/action-zip@v0.1.0
         with:
           args: unzip -qq aws-sam.zip
-      - name: sam package (${{ matrix.region }})
+      - name: Publish to S3 (${{ matrix.region }})
         uses: TractorZoom/sam-cli-action@master
         with:
-          sam_command: "package --output-template-file /dev/null --s3-bucket truss-eks-auto-drain-${{ matrix.region }}"
+          sam_command: "package --output-template-file /dev/null --s3-bucket truss-eks-auto-drain-${{ matrix.region }} | tee sam_package.log"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.TRUSS_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.TRUSS_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ matrix.aws_region }}
+      - id: artifact_metadata
+        run: echo "::set-output name=s3_path::$(grep 'Uploading to' sam_package.log | tail -n 1 | cut -d' ' -f3)"
+        shell: bash
+    outputs:
+      artifact_s3_path: ${{ steps.artifact_metadata.outputs.s3_path }}
