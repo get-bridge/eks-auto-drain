@@ -51,7 +51,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.TRUSS_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ matrix.aws_region }}
       - id: artifact_metadata
-        run: echo "::set-output name=s3_path::$(grep CodeUri packaged.yaml | awk -F'/' '{print $NF})'"
+        run: echo "::set-output name=s3_path::$(grep CodeUri packaged.yaml | cut -d'/' -f4)"
         shell: bash
     outputs:
       artifact_s3_path: ${{ steps.artifact_metadata.outputs.s3_path }}
