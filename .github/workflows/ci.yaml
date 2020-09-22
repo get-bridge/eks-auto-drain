@@ -13,7 +13,7 @@ jobs:
       - name: Zip sam build
         uses: montudor/action-zip@v0.1.0
         with:
-          args: zip -qq -r aws-sam.zip .aws-sam
+          args: zip -qq -r aws-sam.zip README.md .aws-sam
       - name: Upload sam build
         uses: actions/upload-artifact@v2
         with:
