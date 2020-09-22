@@ -42,7 +42,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.TRUSS_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.TRUSS_AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: $${ matrix.aws_region }}
+          AWS_DEFAULT_REGION: "$${ matrix.aws_region }}"
       # - name: sam package (DUB)
       #   uses: TractorZoom/sam-cli-action@master
       #   with:
