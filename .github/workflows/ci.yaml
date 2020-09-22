@@ -45,13 +45,13 @@ jobs:
       - name: Publish to S3 (${{ matrix.region }})
         uses: TractorZoom/sam-cli-action@master
         with:
-          sam_command: "package --output-template-file /dev/null --s3-bucket truss-eks-auto-drain-${{ matrix.region }} | tee sam_package.log"
+          sam_command: "package --output-template-file packaged.yaml --s3-bucket truss-eks-auto-drain-${{ matrix.region }}"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.TRUSS_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.TRUSS_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ matrix.aws_region }}
       - id: artifact_metadata
-        run: echo "::set-output name=s3_path::$(grep 'Uploading to' sam_package.log | tail -n 1 | cut -d' ' -f3)"
+        run: echo "::set-output name=s3_path::$(grep CodeUri packaged.yaml | awk -F'/' '{print $NF})"
         shell: bash
     outputs:
       artifact_s3_path: ${{ steps.artifact_metadata.outputs.s3_path }}
