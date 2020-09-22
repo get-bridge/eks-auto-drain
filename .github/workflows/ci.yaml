@@ -41,7 +41,7 @@ jobs:
       - name: Unzip sam build
         uses: montudor/action-zip@v0.1.0
         with:
-          args: unzip -qq aws-sam.zip -d .aws-sam
+          args: unzip -qq aws-sam.zip
       - name: sam package (${{ matrix.region }})
         uses: TractorZoom/sam-cli-action@master
         with:
