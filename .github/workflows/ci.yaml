@@ -18,10 +18,11 @@ jobs:
   publish-to-s3:
     runs-on: ubuntu-latest
     needs: [build]
-    matrix:
-      region:
-        - code: cmh
-          aws_region: us-east-2
+    strategy:
+      matrix:
+        region:
+          - code: cmh
+            aws_region: us-east-2
     steps:
       - name: Download sam build
         uses: actions/download-artifact@v2
