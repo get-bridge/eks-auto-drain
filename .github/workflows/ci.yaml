@@ -15,7 +15,7 @@ jobs:
         with:
           args: zip -qq -r aws-sam.zip README.md .aws-sam
       - name: Upload build archive
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: aws-sam
           path: aws-sam.zip
@@ -35,7 +35,7 @@ jobs:
             aws_region: ap-southeast-2
     steps:
       - name: Download build archive
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: aws-sam
       - name: Unzip build archive
